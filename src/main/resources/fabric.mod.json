@@ -1,0 +1,40 @@
+{
+	"schemaVersion": 1,
+	"id": "botc",
+	"version": "${version}",
+	"name": "Blood of The Clocktower",
+	"description": "Mod made by SenorOpi based on the game \"Blood of The Clocktower\"",
+	"authors": [
+		"SenorOpi"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "MIT",
+	"icon": "assets/botc/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"opi.botc.BloodOfTheClocktower"
+		],
+		"client": [
+			"opi.botc.BloodOfTheClocktowerClient"
+		],
+		"fabric-datagen": [
+			"opi.botc.BloodOfTheClocktowerDataGenerator"
+		]
+	},
+	"mixins": [
+		"botc.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.16.10",
+		"minecraft": "~1.21.4",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
