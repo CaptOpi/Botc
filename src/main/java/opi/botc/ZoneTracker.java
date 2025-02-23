@@ -1,7 +1,6 @@
 package opi.botc;
 
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;

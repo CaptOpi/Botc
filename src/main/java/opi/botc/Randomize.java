@@ -13,6 +13,7 @@ public class Randomize {
     }
 
     public void randomize(List<ServerPlayerEntity> players) {
+
         if (players.size() > Colors.values().length) {
             return; 
         }
@@ -23,7 +24,7 @@ public class Randomize {
 
         int index = 0;
         for (ServerPlayerEntity player : players) {
-            if (player.hasPermissionLevel(3)) {
+            if (player.hasPermissionLevel(2)) {
                 continue; 
             }
             

@@ -42,7 +42,7 @@ public class BloodOfTheClocktower implements ModInitializer {
 
 	private void onServerStarted(MinecraftServer server) {
 		StateSaverAndLoader serverState = StateSaverAndLoader.getServerState(server);
-		this.server = server;
+		BloodOfTheClocktower.server = server;
 		zones = serverState.getZones();
 		armorStandLocations = serverState.getArmorStandLocations();
 		colorLocations = serverState.getColorLocations();
@@ -79,7 +79,7 @@ public class BloodOfTheClocktower implements ModInitializer {
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess,
 				environment) -> dispatcher.register(literal("dieSet")
-						.requires(source -> source.hasPermissionLevel(3))
+						.requires(source -> source.hasPermissionLevel(2) || source.getEntity() == null)
 						.then(CommandManager.argument("v1", DoubleArgumentType.doubleArg())
 								.then(CommandManager.argument("v2", DoubleArgumentType.doubleArg())
 										.then(CommandManager.argument("v3", DoubleArgumentType.doubleArg())
@@ -99,7 +99,7 @@ public class BloodOfTheClocktower implements ModInitializer {
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess,
 				environment) -> dispatcher.register(literal("die")
 						.then(CommandManager.argument("player", EntityArgumentType.player())
-								.requires(source -> source.hasPermissionLevel(3))
+								.requires(source -> source.hasPermissionLevel(2) || source.getEntity() == null)
 								.executes(context -> {
 									final var world = context.getSource().getWorld();
 									StateSaverAndLoader serverState = StateSaverAndLoader
@@ -144,8 +144,7 @@ public class BloodOfTheClocktower implements ModInitializer {
 																				.argument("z2",
 																						DoubleArgumentType.doubleArg())
 																				.requires(
-																						source -> source
-																								.hasPermissionLevel(3))
+																						source -> source.hasPermissionLevel(2) || source.getEntity() == null)
 																				.executes(context -> {
 																					final var world = context
 																							.getSource()
@@ -181,7 +180,7 @@ public class BloodOfTheClocktower implements ModInitializer {
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess,
 				environment) -> dispatcher.register(literal("zoneList")
-						.requires(source -> source.hasPermissionLevel(3))
+						.requires(source -> source.hasPermissionLevel(2) || source.getEntity() == null)
 						.executes(context -> {
 							for (Map.Entry<String, Zone> entry : zones.entrySet()) {
 								context.getSource().sendFeedback(() -> Text.of(entry.getKey()), true);
@@ -190,7 +189,7 @@ public class BloodOfTheClocktower implements ModInitializer {
 						})));
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess,
 				environment) -> dispatcher.register(literal("zoneClear")
-						.requires(source -> source.hasPermissionLevel(3))
+						.requires(source -> source.hasPermissionLevel(2) || source.getEntity() == null)
 						.executes(context -> {
 							final var world = context.getSource().getWorld();
 							StateSaverAndLoader serverState = StateSaverAndLoader.getServerState(world.getServer());
@@ -202,7 +201,7 @@ public class BloodOfTheClocktower implements ModInitializer {
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess,
 				environment) -> dispatcher.register(literal("zoneRemove")
 						.then(CommandManager.argument("zone", StringArgumentType.string())
-								.requires(source -> source.hasPermissionLevel(3))
+								.requires(source -> source.hasPermissionLevel(2) || source.getEntity() == null)
 								.executes(context -> {
 									final var world = context.getSource().getWorld();
 									StateSaverAndLoader serverState = StateSaverAndLoader
@@ -228,7 +227,7 @@ public class BloodOfTheClocktower implements ModInitializer {
 												.then(CommandManager.argument("z", DoubleArgumentType.doubleArg())
 														.then(CommandManager
 																.argument("direction", StringArgumentType.string())
-																.requires(source -> source.hasPermissionLevel(3))
+																.requires(source -> source.hasPermissionLevel(2) || source.getEntity() == null)
 																.executes(context -> {
 																	final var key = StringArgumentType.getString(
 																			context,
@@ -259,7 +258,7 @@ public class BloodOfTheClocktower implements ModInitializer {
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess,
 				environment) -> dispatcher.register(literal("zoneStandRemove")
 						.then(CommandManager.argument("key", StringArgumentType.string())
-								.requires(source -> source.hasPermissionLevel(3))
+								.requires(source -> source.hasPermissionLevel(2) || source.getEntity() == null)
 								.executes(context -> {
 									ArmorStandLocation location = armorStandLocations
 											.get(StringArgumentType.getString(context, "key"));
@@ -279,7 +278,7 @@ public class BloodOfTheClocktower implements ModInitializer {
 								}))));
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess,
 				environment) -> dispatcher.register(literal("zoneStandList")
-						.requires(source -> source.hasPermissionLevel(3))
+						.requires(source -> source.hasPermissionLevel(2) || source.getEntity() == null)
 						.executes(context -> {
 							for (Map.Entry<String, ArmorStandLocation> entry : armorStandLocations.entrySet()) {
 								context.getSource().sendFeedback(() -> Text.of(entry.getKey()), true);
@@ -288,7 +287,7 @@ public class BloodOfTheClocktower implements ModInitializer {
 						})));
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess,
 				environment) -> dispatcher.register(literal("zoneStandClear")
-						.requires(source -> source.hasPermissionLevel(3))
+						.requires(source -> source.hasPermissionLevel(2) || source.getEntity() == null)
 						.executes(context -> {
 							final var world = context.getSource().getWorld();
 							StateSaverAndLoader serverState = StateSaverAndLoader.getServerState(world.getServer());
@@ -299,7 +298,7 @@ public class BloodOfTheClocktower implements ModInitializer {
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess,
 				environment) -> dispatcher.register(literal("dieUndo")
 						.then(CommandManager.argument("player", EntityArgumentType.player())
-								.requires(source -> source.hasPermissionLevel(3))
+								.requires(source -> source.hasPermissionLevel(2) || source.getEntity() == null)
 								.executes(context -> {
 									final var player = EntityArgumentType.getPlayer(context, "player");
 									String command = "execute at" + " " + player.getName().getString()
@@ -318,7 +317,7 @@ public class BloodOfTheClocktower implements ModInitializer {
 								.then(CommandManager.argument("x", DoubleArgumentType.doubleArg())
 										.then(CommandManager.argument("y", DoubleArgumentType.doubleArg())
 												.then(CommandManager.argument("z", DoubleArgumentType.doubleArg())
-														.requires(source -> source.hasPermissionLevel(3))
+														.requires(source -> source.hasPermissionLevel(2) || source.getEntity() == null)
 														.executes(context -> {
 															final var world = context.getSource().getWorld();
 															StateSaverAndLoader serverState = StateSaverAndLoader
@@ -336,7 +335,7 @@ public class BloodOfTheClocktower implements ModInitializer {
 														})))))));
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess,
 				environment) -> dispatcher.register(literal("houseList")
-						.requires(source -> source.hasPermissionLevel(3))
+						.requires(source -> source.hasPermissionLevel(2) || source.getEntity() == null)
 						.executes(context -> {
 							for (Map.Entry<String, ColorLocation> entry : colorLocations.entrySet()) {
 								context.getSource().sendFeedback(() -> Text.of(entry.getKey()), true);
@@ -345,7 +344,7 @@ public class BloodOfTheClocktower implements ModInitializer {
 						})));
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess,
 				environment) -> dispatcher.register(literal("houseClear")
-						.requires(source -> source.hasPermissionLevel(3))
+						.requires(source -> source.hasPermissionLevel(2) || source.getEntity() == null)
 						.executes(context -> {
 							final var world = context.getSource().getWorld();
 							StateSaverAndLoader serverState = StateSaverAndLoader.getServerState(world.getServer());
@@ -356,7 +355,7 @@ public class BloodOfTheClocktower implements ModInitializer {
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess,
 				environment) -> dispatcher.register(literal("houseRemove")
 						.then(CommandManager.argument("color", StringArgumentType.string())
-								.requires(source -> source.hasPermissionLevel(3))
+								.requires(source -> source.hasPermissionLevel(2) || source.getEntity() == null)
 								.executes(context -> {
 									final var world = context.getSource().getWorld();
 									StateSaverAndLoader serverState = StateSaverAndLoader
@@ -376,7 +375,7 @@ public class BloodOfTheClocktower implements ModInitializer {
 								}))));
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess,
 				environment) -> dispatcher.register(literal("gameStart")
-						.requires(source -> source.hasPermissionLevel(3))
+						.requires(source -> source.hasPermissionLevel(2) || source.getEntity() == null)
 						.executes(context -> {
 							random.putAllColorLocations(colorLocations);
 							random.randomize(server.getPlayerManager().getPlayerList());
@@ -398,20 +397,24 @@ public class BloodOfTheClocktower implements ModInitializer {
 								context.getSource().sendFeedback(() -> Text.of("Teleported " + player.getName().getString() + " to " + colorKey), true);
 
 							}
+							BookBuilder bookBuilder = new BookBuilder(playerColors, server);
+							String giveCommand = bookBuilder.createGiveCommand();
+							LOGGER.info(giveCommand);
 							return 1;
 						})));
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess,
 				environment) -> dispatcher.register(literal("gameReset")
-						.requires(source -> source.hasPermissionLevel(3))
+						.requires(source -> source.hasPermissionLevel(2) || source.getEntity() == null)
 						.executes(context -> {
 							random.putAllColorLocations(colorLocations);
 							random.clearPlayerColors();
 							playerColors.clear();
+							
 							return 1;
 						})));
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess,
 				environment) -> dispatcher.register(literal("playerColorList")
-						.requires(source -> source.hasPermissionLevel(3))
+						.requires(source -> source.hasPermissionLevel(2) || source.getEntity() == null)
 						.executes(context -> {
 							for (Map.Entry<UUID, Colors> entry : playerColors.entrySet()) {
 								context.getSource().sendFeedback(() -> Text.of(server.getPlayerManager().getPlayer(entry.getKey()).getName().toString() + " " + entry.getValue()),
