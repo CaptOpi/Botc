@@ -71,7 +71,8 @@ public class BloodOfTheClocktower implements ModInitializer {
 		});
 
 		AttackEntityCallback.EVENT.register((player, world, hand, entity, entityHitResult) -> {
-			if (entity instanceof PlayerEntity) {
+			//Only allow players to attack entities with permission 2+
+			if (entity instanceof PlayerEntity && !(player.hasPermissionLevel(2))) {
 				return ActionResult.FAIL;
 			}
 			return ActionResult.PASS;

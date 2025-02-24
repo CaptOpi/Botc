@@ -49,7 +49,7 @@ public class BookBuilder {
             slot++;
         }
         
-        String giveCommand = "/give @a[gamemode=!creative] written_book[written_book_content={pages:['[[\"\",{\"text\":\"Player Positions\",\"bold\":true,\"underlined\":true},\"\\\\n\\\\n\","
+        String giveCommand = "/give @a written_book[written_book_content={pages:['[[\"\",{\"text\":\"Player Positions\",\"bold\":true,\"underlined\":true},\"\\\\n\\\\n\","
                 + contentBuilder.toString()
                 + "{\"text\":\"(Note: Players are arranged in a circle so 1 to 8 are also neighbours)\",\"italic\":true,\"color\":\"#828282\"}]]'],title:\"Player Positions\",author:Flame_Burns}]";
         return giveCommand;
