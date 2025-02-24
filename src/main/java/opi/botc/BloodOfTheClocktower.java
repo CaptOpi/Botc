@@ -38,7 +38,7 @@ public class BloodOfTheClocktower implements ModInitializer {
 	public Map<String, ArmorStandLocation> armorStandLocations = new HashMap<>();
 	public Map<String, ColorLocation> colorLocations = new HashMap<>();
 	public Map<UUID, Colors> playerColors = new HashMap<>();
-	Randomize random = new Randomize(colorLocations);
+	Randomize random = new Randomize(colorLocations, LOGGER);
 
 	private void onServerStarted(MinecraftServer server) {
 		StateSaverAndLoader serverState = StateSaverAndLoader.getServerState(server);

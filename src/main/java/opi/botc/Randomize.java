@@ -2,32 +2,40 @@ package opi.botc;
 
 import java.util.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.minecraft.server.network.ServerPlayerEntity;
 
 public class Randomize {
     private final Map<String, ColorLocation> colorLocations = new HashMap<>();
     private final Map<UUID, Colors> playerColors = new HashMap<>();
+    private Logger LOGGER = null;
 
-    public Randomize(Map<String, ColorLocation> colorLocations) {
+    public Randomize(Map<String, ColorLocation> colorLocations, Logger LOGGER) {
         this.colorLocations.putAll(colorLocations);
+        this.LOGGER = LOGGER;
     }
 
     public void randomize(List<ServerPlayerEntity> players) {
 
-        if (players.size() > Colors.values().length) {
-            return; 
+        Iterator<ServerPlayerEntity> iterator = players.iterator();
+        while (iterator.hasNext()) {
+            ServerPlayerEntity player = iterator.next();
+            if (player.hasPermissionLevel(2)) {
+                iterator.remove();
+            }
         }
-
         
         List<Colors> availableColors = new ArrayList<>(Arrays.asList(Colors.values()));
         Collections.shuffle(availableColors);
 
         int index = 0;
+        if(players.size() > availableColors.size()) {
+            LOGGER.warn("Too many players. Max is 8, but there are " + players.size() + " players.");
+            return;
+        }
         for (ServerPlayerEntity player : players) {
-            if (player.hasPermissionLevel(2)) {
-                continue; 
-            }
-            
             playerColors.put(player.getUuid(), availableColors.get(index));
             index++;
         }
