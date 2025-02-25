@@ -1,4 +1,4 @@
-package opi.botc;
+package opi.botc.utils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,6 +11,11 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.PersistentStateManager;
 import net.minecraft.world.World;
+import opi.botc.BloodOfTheClocktower;
+import opi.botc.zones.ArmorStandLocation;
+import opi.botc.zones.ColorLocation;
+import opi.botc.zones.Location;
+import opi.botc.zones.Zone;
 
 public class StateSaverAndLoader extends PersistentState {
 

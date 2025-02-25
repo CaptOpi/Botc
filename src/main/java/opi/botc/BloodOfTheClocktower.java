@@ -15,6 +15,14 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
+import opi.botc.utils.BookBuilder;
+import opi.botc.utils.Colors;
+import opi.botc.utils.Randomize;
+import opi.botc.utils.StateSaverAndLoader;
+import opi.botc.utils.ZoneTracker;
+import opi.botc.zones.ArmorStandLocation;
+import opi.botc.zones.ColorLocation;
+import opi.botc.zones.Zone;
 
 import static net.minecraft.server.command.CommandManager.literal;
 
@@ -183,6 +191,9 @@ public class BloodOfTheClocktower implements ModInitializer {
 				environment) -> dispatcher.register(literal("zoneList")
 						.requires(source -> source.hasPermissionLevel(2) || source.getEntity() == null)
 						.executes(context -> {
+							if(zones.size() == 0) {
+								context.getSource().sendFeedback(() -> Text.of("No zones"), true);
+							}
 							for (Map.Entry<String, Zone> entry : zones.entrySet()) {
 								context.getSource().sendFeedback(() -> Text.of(entry.getKey()), true);
 							}
@@ -281,6 +292,9 @@ public class BloodOfTheClocktower implements ModInitializer {
 				environment) -> dispatcher.register(literal("zoneStandList")
 						.requires(source -> source.hasPermissionLevel(2) || source.getEntity() == null)
 						.executes(context -> {
+							if(armorStandLocations.size() == 0) {
+								context.getSource().sendFeedback(() -> Text.of("No locations"), true);
+							}
 							for (Map.Entry<String, ArmorStandLocation> entry : armorStandLocations.entrySet()) {
 								context.getSource().sendFeedback(() -> Text.of(entry.getKey()), true);
 							}
@@ -338,6 +352,9 @@ public class BloodOfTheClocktower implements ModInitializer {
 				environment) -> dispatcher.register(literal("houseList")
 						.requires(source -> source.hasPermissionLevel(2) || source.getEntity() == null)
 						.executes(context -> {
+							if(colorLocations.size() == 0) {
+								context.getSource().sendFeedback(() -> Text.of("No houses"), true);
+							}
 							for (Map.Entry<String, ColorLocation> entry : colorLocations.entrySet()) {
 								context.getSource().sendFeedback(() -> Text.of(entry.getKey()), true);
 							}
@@ -378,6 +395,10 @@ public class BloodOfTheClocktower implements ModInitializer {
 				environment) -> dispatcher.register(literal("gameStart")
 						.requires(source -> source.hasPermissionLevel(2) || source.getEntity() == null)
 						.executes(context -> {
+							if(colorLocations.size() != 8) {
+								context.getSource().sendFeedback(() -> Text.of("Need 8 houses"), true);
+								return 1;
+							}
 							random.putAllColorLocations(colorLocations);
 							random.randomize(server.getPlayerManager().getPlayerList());
 							playerColors.putAll(random.getPlayerColors());
@@ -417,6 +438,9 @@ public class BloodOfTheClocktower implements ModInitializer {
 				environment) -> dispatcher.register(literal("playerColorList")
 						.requires(source -> source.hasPermissionLevel(2) || source.getEntity() == null)
 						.executes(context -> {
+							if(playerColors.size() == 0) {
+								context.getSource().sendFeedback(() -> Text.of("No player colors"), true);
+							}
 							for (Map.Entry<UUID, Colors> entry : playerColors.entrySet()) {
 								context.getSource().sendFeedback(() -> Text.of(server.getPlayerManager().getPlayer(entry.getKey()).getName().toString() + " " + entry.getValue()),
 										true);

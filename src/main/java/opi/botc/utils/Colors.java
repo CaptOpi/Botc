@@ -1,4 +1,4 @@
-package opi.botc;
+package opi.botc.utils;
 
 public enum Colors {
     RED("Red"),

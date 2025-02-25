@@ -1,4 +1,4 @@
-package opi.botc;
+package opi.botc.utils;
 
 import java.util.*;
 
@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.server.network.ServerPlayerEntity;
+import opi.botc.zones.ColorLocation;
 
 public class Randomize {
     private final Map<String, ColorLocation> colorLocations = new HashMap<>();

@@ -1,4 +1,4 @@
-package opi.botc;
+package opi.botc.utils;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;

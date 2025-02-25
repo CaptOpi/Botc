@@ -1,4 +1,4 @@
-package opi.botc;
+package opi.botc.zones;
 
 import net.minecraft.nbt.NbtCompound;
 

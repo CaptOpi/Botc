@@ -1,6 +1,7 @@
-package opi.botc;
+package opi.botc.zones;
 
 import net.minecraft.nbt.NbtCompound;
+import opi.botc.utils.Colors;
 
 public class ColorLocation  extends Location{
     public Colors color;
