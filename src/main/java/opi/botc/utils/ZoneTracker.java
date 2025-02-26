@@ -39,7 +39,7 @@ public class ZoneTracker {
         if (!Objects.equals(previousZoneKey, currentZoneKey)) {
             if (previousZoneKey != null) {
                 if(!player.hasPermissionLevel(2)) {
-                    notifyPlayersInZone(previousZoneKey, Text.literal(player.getName().getString() + " exited the " + previousZoneKey).setStyle(Style.EMPTY.withBold(true).withColor(TextColor.fromRgb(0xFF0000))));
+                    notifyPlayersInZone(previousZoneKey, Text.literal(player.getName().getString() + " exited the " + previousZoneKey.replaceAll("\\d", "")).setStyle(Style.EMPTY.withBold(true).withColor(TextColor.fromRgb(0xFF0000))));
                 }
                 zonePlayers.getOrDefault(previousZoneKey, new HashSet<>()).remove(uuid);
                 String command = "execute as " + player.getName().getString() + " run voicechat leave";
@@ -59,7 +59,7 @@ public class ZoneTracker {
             }
             if (currentZoneKey != null) {
                 if(!player.hasPermissionLevel(2)) {
-                    notifyPlayersInZone(currentZoneKey, Text.literal(player.getName().getString() + " entered the " + currentZoneKey).setStyle(Style.EMPTY.withBold(true).withColor(TextColor.fromRgb(0xFF0000))));
+                    notifyPlayersInZone(currentZoneKey, Text.literal(player.getName().getString() + " entered the " + currentZoneKey.replaceAll("\\d", "")).setStyle(Style.EMPTY.withBold(true).withColor(TextColor.fromRgb(0xFF0000))));
                 }
                 zonePlayers.computeIfAbsent(currentZoneKey, k -> new HashSet<>()).add(uuid);
                 String command = "execute as " + player.getName().getString() + " run voicechat join " + currentZoneKey;

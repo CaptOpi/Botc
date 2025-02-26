@@ -37,14 +37,6 @@ public class BookBuilder {
                         .append("\"},\"")
                         .append(playerName)
                         .append("\\\\n\",");
-            } else {
-                contentBuilder.append("{\"text\":\"")
-                        .append(slot)
-                        .append(": \",\"color\":\"")
-                        .append(getColorCode(color))
-                        .append("\"},\"")
-                        .append("Empty")
-                        .append("\\\\n\",");
             }
             slot++;
         }

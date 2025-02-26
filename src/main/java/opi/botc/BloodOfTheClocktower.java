@@ -79,7 +79,6 @@ public class BloodOfTheClocktower implements ModInitializer {
 		});
 
 		AttackEntityCallback.EVENT.register((player, world, hand, entity, entityHitResult) -> {
-			//Only allow players to attack entities with permission 2+
 			if (entity instanceof PlayerEntity && !(player.hasPermissionLevel(2))) {
 				return ActionResult.FAIL;
 			}
@@ -183,7 +182,7 @@ public class BloodOfTheClocktower implements ModInitializer {
 																					zones.put(zone.key, zone);
 																					context.getSource().sendFeedback(
 																							() -> Text.of("Zone added"),
-																							true);
+																							false);
 																					return 1;
 																				}))))))))));
 
@@ -192,10 +191,10 @@ public class BloodOfTheClocktower implements ModInitializer {
 						.requires(source -> source.hasPermissionLevel(2) || source.getEntity() == null)
 						.executes(context -> {
 							if(zones.size() == 0) {
-								context.getSource().sendFeedback(() -> Text.of("No zones"), true);
+								context.getSource().sendFeedback(() -> Text.of("No zones"), false);
 							}
 							for (Map.Entry<String, Zone> entry : zones.entrySet()) {
-								context.getSource().sendFeedback(() -> Text.of(entry.getKey()), true);
+								context.getSource().sendFeedback(() -> Text.of(entry.getKey()), false);
 							}
 							return 1;
 						})));
@@ -207,7 +206,7 @@ public class BloodOfTheClocktower implements ModInitializer {
 							StateSaverAndLoader serverState = StateSaverAndLoader.getServerState(world.getServer());
 							serverState.clearZones();
 							zones.clear();
-							context.getSource().sendFeedback(() -> Text.of("Zones cleared"), true);
+							context.getSource().sendFeedback(() -> Text.of("Zones cleared"), false);
 							return 1;
 						})));
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess,
@@ -223,10 +222,10 @@ public class BloodOfTheClocktower implements ModInitializer {
 										serverState.removeZone(zone);
 										zones.remove(zone);
 										context.getSource().sendFeedback(() -> Text.of("Zone " + zone + " deleted"),
-												true);
+												false);
 									} else {
 										context.getSource()
-												.sendFeedback(() -> Text.of("Zone " + zone + " does not exist"), true);
+												.sendFeedback(() -> Text.of("Zone " + zone + " does not exist"), false);
 									}
 									return 1;
 								}))));
@@ -264,7 +263,7 @@ public class BloodOfTheClocktower implements ModInitializer {
 																			location);
 																	context.getSource().sendFeedback(
 																			() -> Text.of("Location added"),
-																			true);
+																			false);
 																	return 1;
 																}))))))));
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess,
@@ -281,10 +280,10 @@ public class BloodOfTheClocktower implements ModInitializer {
 										serverState.removeArmorStandLocation(location.getKey());
 										context.getSource().sendFeedback(
 												() -> Text.of("Location " + location.key + " deleted"),
-												true);
+												false);
 									} else {
 										context.getSource()
-												.sendFeedback(() -> Text.of("Location does not exist"), true);
+												.sendFeedback(() -> Text.of("Location does not exist"), false);
 									}
 									return 1;
 								}))));
@@ -293,10 +292,10 @@ public class BloodOfTheClocktower implements ModInitializer {
 						.requires(source -> source.hasPermissionLevel(2) || source.getEntity() == null)
 						.executes(context -> {
 							if(armorStandLocations.size() == 0) {
-								context.getSource().sendFeedback(() -> Text.of("No locations"), true);
+								context.getSource().sendFeedback(() -> Text.of("No locations"), false);
 							}
 							for (Map.Entry<String, ArmorStandLocation> entry : armorStandLocations.entrySet()) {
-								context.getSource().sendFeedback(() -> Text.of(entry.getKey()), true);
+								context.getSource().sendFeedback(() -> Text.of(entry.getKey()), false);
 							}
 							return 1;
 						})));
@@ -353,10 +352,10 @@ public class BloodOfTheClocktower implements ModInitializer {
 						.requires(source -> source.hasPermissionLevel(2) || source.getEntity() == null)
 						.executes(context -> {
 							if(colorLocations.size() == 0) {
-								context.getSource().sendFeedback(() -> Text.of("No houses"), true);
+								context.getSource().sendFeedback(() -> Text.of("No houses"),false);
 							}
 							for (Map.Entry<String, ColorLocation> entry : colorLocations.entrySet()) {
-								context.getSource().sendFeedback(() -> Text.of(entry.getKey()), true);
+								context.getSource().sendFeedback(() -> Text.of(entry.getKey()), false);
 							}
 							return 1;
 						})));
@@ -383,11 +382,11 @@ public class BloodOfTheClocktower implements ModInitializer {
 										serverState.removeColorLocation(color);
 										colorLocations.remove(color);
 										context.getSource().sendFeedback(() -> Text.of("House " + color + " deleted"),
-												true);
+												false);
 									} else {
 										context.getSource().sendFeedback(
 												() -> Text.of("House " + color + " does not exist"),
-												true);
+												false);
 									}
 									return 1;
 								}))));
@@ -396,7 +395,7 @@ public class BloodOfTheClocktower implements ModInitializer {
 						.requires(source -> source.hasPermissionLevel(2) || source.getEntity() == null)
 						.executes(context -> {
 							if(colorLocations.size() != 8) {
-								context.getSource().sendFeedback(() -> Text.of("Need 8 houses"), true);
+								context.getSource().sendFeedback(() -> Text.of("Need 8 houses"), false);
 								return 1;
 							}
 							random.putAllColorLocations(colorLocations);
@@ -416,7 +415,7 @@ public class BloodOfTheClocktower implements ModInitializer {
 								}
 								player.teleport(location.getX(), location.getY(), location.getZ(), true);
 								player.networkHandler.requestTeleport(location.getX(), location.getY(), location.getZ(), player.getYaw(), player.getPitch());
-								context.getSource().sendFeedback(() -> Text.of("Teleported " + player.getName().getString() + " to " + colorKey), true);
+								context.getSource().sendFeedback(() -> Text.of("Teleported " + player.getName().getString() + " to " + colorKey), false);
 
 							}
 							BookBuilder bookBuilder = new BookBuilder(playerColors, server);
@@ -439,11 +438,11 @@ public class BloodOfTheClocktower implements ModInitializer {
 						.requires(source -> source.hasPermissionLevel(2) || source.getEntity() == null)
 						.executes(context -> {
 							if(playerColors.size() == 0) {
-								context.getSource().sendFeedback(() -> Text.of("No player colors"), true);
+								context.getSource().sendFeedback(() -> Text.of("No player colors"), false);
 							}
 							for (Map.Entry<UUID, Colors> entry : playerColors.entrySet()) {
 								context.getSource().sendFeedback(() -> Text.of(server.getPlayerManager().getPlayer(entry.getKey()).getName().toString() + " " + entry.getValue()),
-										true);
+										false);
 							}
 							return 1;
 						})));

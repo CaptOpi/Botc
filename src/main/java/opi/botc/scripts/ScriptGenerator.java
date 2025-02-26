@@ -4,13 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import opi.botc.roles.Role;
+
 public class ScriptGenerator {
-    
-
-    private class Role {
-
-    }
-
+    private Role[] roles;
 
 
 }
