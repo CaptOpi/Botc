@@ -3,7 +3,6 @@ package opi.botc.utils;
 import java.util.*;
 
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import net.minecraft.server.network.ServerPlayerEntity;
 import opi.botc.zones.ColorLocation;

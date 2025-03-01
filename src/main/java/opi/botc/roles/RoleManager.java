@@ -4,73 +4,73 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RoleManager {
-    private Map<String, Role> town = new HashMap<>();
-    private Map<String, Role> outsider = new HashMap<>();
-    private Map<String, Role> minion = new HashMap<>();
-    private Map<String, Role> demon = new HashMap<>();
-    private Map<String, Role> traveller = new HashMap<>();
-    private Map<String, Role> fabled = new HashMap<>();
+    private Map<String, Role> townsfolk = new HashMap<>();
+    private Map<String, Role> outsiders = new HashMap<>();
+    private Map<String, Role> minions = new HashMap<>();
+    private Map<String, Role> demons = new HashMap<>();
+    private Map<String, Role> travellers = new HashMap<>();
+    private Map<String, Role> roles = new HashMap<>();
 
     public void addRole(Role role) {
         switch ((RoleType) role.getRoleType()) {
             case Townsfolk:
-                town.put(role.getName(), role);
+                townsfolk.put(role.getName(), role);
                 break;
             case Outsider:
-                outsider.put(role.getName(), role);
+                outsiders.put(role.getName(), role);
                 break;
             case Minion:
-                minion.put(role.getName(), role);
+                minions.put(role.getName(), role);
                 break;
             case Demon:
-                demon.put(role.getName(), role);
+                demons.put(role.getName(), role);
                 break;
             case Traveller:
-                traveller.put(role.getName(), role);
-                break;
-            case Fabled:
-                fabled.put(role.getName(), role);
+                travellers.put(role.getName(), role);
                 break;
         }
+    }
+    public void addRole(String name, Role role) {
+        roles.put(name, role);
+    }
+    public Role getRole(String name) {
+        return roles.get(name);
+    }
+    public String toString() {
+        return roles.toString();
     }
     public void removeRole(Role role) {
         switch ((RoleType) role.getRoleType()) {
             case Townsfolk:
-                town.remove(role.getName());
+                townsfolk.remove(role.getName());
                 break;
             case Outsider:
-                outsider.remove(role.getName());
+                outsiders.remove(role.getName());
                 break;
             case Minion:
-                minion.remove(role.getName());
+                minions.remove(role.getName());
                 break;
             case Demon:
-                demon.remove(role.getName());
+                demons.remove(role.getName());
                 break;
             case Traveller:
-                traveller.remove(role.getName());
-                break;
-            case Fabled:
-                fabled.remove(role.getName());
+                travellers.remove(role.getName());
                 break;
         }
     }
     public Map<String, Role> getTown() {
-        return town;
+        return townsfolk;
     }
     public Map<String, Role> getOutsider() {
-        return outsider;
+        return outsiders;
     }
     public Map<String, Role> getMinion() {
-        return minion;
+        return minions;
     }
     public Map<String, Role> getDemon() {
-        return demon;
+        return demons;
     }
     public Map<String, Role> getTraveller() {
-        return traveller;
-    }
-    public Map<String, Role> getFabled() {
-        return fabled;
+        return travellers;
     }
 }

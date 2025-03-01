@@ -1,7 +1,7 @@
 {
 	"schemaVersion": 1,
 	"id": "botc",
-	"version": "${version}",
+	"version": "1",
 	"name": "Blood of The Clocktower",
 	"description": "Mod made by SenorOpi based on the game \"Blood of The Clocktower\"",
 	"authors": [

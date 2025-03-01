@@ -1,0 +1,28 @@
+{
+    "name": "Rule 9",
+    "icon": "minecraft:barrier",
+    "category": "botc:rule_category",
+    "sortnum": 9,
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "text": "Do not attempt to escape the map it will just mean you will be teleported back to the centre."
+        },
+        {
+            "type": "patchouli:relations",
+            "entries": [
+                "botc:rules/rule1",
+                "botc:rules/rule2",
+                "botc:rules/rule3",
+                "botc:rules/rule4",
+                "botc:rules/rule5",
+                "botc:rules/rule6",
+                "botc:rules/rule7",
+                "botc:rules/rule8",
+                "botc:rules/rule10",
+                "botc:rules/rule11"
+            ],
+            "title": "Related Rules"
+        }
+    ]
+}

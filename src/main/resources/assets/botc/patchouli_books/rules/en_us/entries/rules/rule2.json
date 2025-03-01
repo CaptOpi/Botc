@@ -1,0 +1,28 @@
+{
+    "name": "Rule 2",
+    "icon": "minecraft:barrier",
+    "category": "botc:rule_category",
+    "sortnum": 2,
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "text": "On the first night you will get a piece of paper with a role on it, do not give this to any other player this is for you and you alone."
+        },
+        {
+            "type": "patchouli:relations",
+            "entries": [
+                "botc:rules/rule1",
+                "botc:rules/rule3",
+                "botc:rules/rule4",
+                "botc:rules/rule5",
+                "botc:rules/rule6",
+                "botc:rules/rule7",
+                "botc:rules/rule8",
+                "botc:rules/rule9",
+                "botc:rules/rule10",
+                "botc:rules/rule11"
+            ],
+            "title": "Related Rules"
+        }
+    ]
+}

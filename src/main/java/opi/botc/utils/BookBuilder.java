@@ -1,10 +1,6 @@
 package opi.botc.utils;
-
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.nbt.NbtCompound;
 import java.util.Map;
 import java.util.UUID;
 

@@ -1,0 +1,28 @@
+{
+    "name": "Rule 1",
+    "icon": "minecraft:barrier",
+    "category": "botc:rule_category",
+    "sortnum": 1,
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "text": "Do not exit your house at night wait until you hear a bell to be able to leave."
+        },
+        {
+            "type": "patchouli:relations",
+            "entries": [
+                "botc:rules/rule2",
+                "botc:rules/rule3",
+                "botc:rules/rule4",
+                "botc:rules/rule5",
+                "botc:rules/rule6",
+                "botc:rules/rule7",
+                "botc:rules/rule8",
+                "botc:rules/rule9",
+                "botc:rules/rule10",
+                "botc:rules/rule11"
+            ],
+            "title": "Related Rules"
+        }
+    ]
+}

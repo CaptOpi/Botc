@@ -33,7 +33,7 @@ bin/
 run/
 remappedSrc/
 # java
-
+saves/
 hs_err_*.log
 replay_*.log
 *.hprof
@@ -42,3 +42,6 @@ logs/
 downloads/
 data/
 config/
+usercache.json
+patchouli_data.json
+options.txt

@@ -5,6 +5,5 @@ public enum RoleType {
     Outsider,
     Minion,
     Demon,
-    Traveller,
-    Fabled
+    Traveller
 }
