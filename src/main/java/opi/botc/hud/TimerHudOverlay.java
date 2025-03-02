@@ -40,17 +40,20 @@ public class TimerHudOverlay implements HudRenderCallback {
         int screenWidth = client.getWindow().getScaledWidth();
         int screenHeight = client.getWindow().getScaledHeight();
 
+        int textHeight = textRenderer.fontHeight;
+
+        int x = screenWidth / 2;
+        int y = ((int) (screenHeight / 2.5)) - (textHeight / 2);
         MatrixStack matrixStack = drawContext.getMatrices();
         matrixStack.push();
-        
-        matrixStack.scale(2.0f, 2.0f, 1.0f);
-        
-        int x = screenWidth / 2 - textRenderer.getWidth(timerText) / 2;
-        int y = screenHeight / 2 - textRenderer.fontHeight / 2;
 
-        drawContext.drawTextWithShadow(textRenderer, timerText, x, y, 0xFFFFFF);
+        matrixStack.scale(2f, 2f, 1.0f);
 
-        matrixStack.pop(); 
+        x = (int) (x / 2);
+        y = (int) (y / 2);
+        drawContext.drawCenteredTextWithShadow(textRenderer, timerText, x, y, 0x000000);
+        matrixStack.pop();
+
     }
 
     public static void setTimerEnd(String end) {

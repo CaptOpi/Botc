@@ -3,8 +3,6 @@ package opi.botc.utils;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import opi.botc.networking.packet.RenderTimerEnd;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.boss.ServerBossBar;
 
 import java.util.Timer;
@@ -44,10 +42,6 @@ public class BossBarTimer {
                 if (ticksRemaining <= 0) {
                     bossBar.setVisible(false);
                     this.cancel();
-
-                    for (ServerPlayerEntity player : bossBar.getPlayers()) {
-                        ServerPlayNetworking.send(player, new RenderTimerEnd("end"));
-                    }
 
                     return;
                 }

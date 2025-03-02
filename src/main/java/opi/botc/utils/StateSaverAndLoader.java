@@ -15,6 +15,7 @@ import opi.botc.BloodOfTheClocktower;
 import opi.botc.zones.ArmorStandLocation;
 import opi.botc.zones.ColorLocation;
 import opi.botc.zones.Location;
+import opi.botc.zones.SignLocation;
 import opi.botc.zones.Zone;
 
 public class StateSaverAndLoader extends PersistentState {
@@ -28,6 +29,9 @@ public class StateSaverAndLoader extends PersistentState {
     private final Map<String, ArmorStandLocation> armorStandLocations = new HashMap<>();
 
     private final Map<String, ColorLocation> colorLocations = new HashMap<>();
+
+    private final Map<String, SignLocation> signLocations = new HashMap<>();
+
 
     public void addColorLocation(String key, ColorLocation colorLocation) {
         colorLocations.put(key, colorLocation);
@@ -58,6 +62,21 @@ public class StateSaverAndLoader extends PersistentState {
     }
     public Map<String, ArmorStandLocation> getArmorStandLocations() {
         return armorStandLocations;
+    }
+    public void addSignLocation(String key, SignLocation signLocation) {
+        signLocations.put(key, signLocation);
+        markDirty();
+    }
+    public void removeSignLocation(String key) {
+        signLocations.remove(key);
+        markDirty();
+    }
+    public void clearSignLocations() {
+        signLocations.clear();
+        markDirty();
+    }
+    public Map<String, SignLocation> getSignLocations() {
+        return signLocations;
     }
     public void addZone(Zone zone) {
         zones.put(zone.key, zone);
@@ -101,6 +120,14 @@ public class StateSaverAndLoader extends PersistentState {
             colorLocation.put("location", entry.getValue().toNbt());
             colorLocationList.add(colorLocation);
         }
+        NbtList signLocationList = new NbtList();
+        for (Map.Entry<String, SignLocation> entry : signLocations.entrySet()) {
+            NbtCompound signLocation = new NbtCompound();
+            signLocation.putString("key", entry.getKey());
+            signLocation.put("location", entry.getValue().toNbt());
+            signLocationList.add(signLocation);
+        }
+        nbt.put("signLocations", signLocationList);
         nbt.put("colorLocations", colorLocationList);
         nbt.put("zones", zoneList);
         nbt.put("armorStandLocation", armorStandLocationList);
@@ -137,6 +164,14 @@ public class StateSaverAndLoader extends PersistentState {
                 Location location = Location.fromNbt(locNbt);
                 state.addColorLocation(key, new ColorLocation(color, location.getX(), location.getY(), location.getZ()));
             }
+        }
+        NbtList signLocationList = tag.getList("signLocations", 10);
+        for (int i = 0; i < signLocationList.size(); i++) {
+            NbtCompound signLocationCompound = signLocationList.getCompound(i);
+            String key = signLocationCompound.getString("key");
+            NbtCompound locNbt = signLocationCompound.getCompound("location");
+            SignLocation signLocation = SignLocation.fromNbt(locNbt);
+            state.addSignLocation(key, signLocation);
         }
         return state;
     }

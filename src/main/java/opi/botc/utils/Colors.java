@@ -1,5 +1,7 @@
 package opi.botc.utils;
 
+import net.minecraft.util.DyeColor;
+
 public enum Colors {
     RED("Red"),
     GREEN("Lime"),
@@ -42,5 +44,14 @@ public enum Colors {
             System.out.println("Selected color: " + color);
         }
         return color;
+    }
+
+    public static DyeColor getDyeColorFromDisplayName(String displayName) {
+        for (DyeColor dye : DyeColor.values()) {
+            if (dye.getName().equalsIgnoreCase(displayName)) {
+                return dye;
+            }
+        }
+        return DyeColor.WHITE;
     }
 }

@@ -3,9 +3,9 @@ package opi.botc.roles;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Identifier;
 import opi.botc.BloodOfTheClocktower;
 
@@ -21,8 +21,9 @@ public class RoleLoader {
     private static final Identifier ROLES_JSON = Identifier.of(BloodOfTheClocktower.MOD_ID, "role/roles.json");
     public static Logger LOGGER = Logger.getLogger(BloodOfTheClocktower.MOD_ID);
 
-    public static void loadRoles(RoleManager roleManager) {
-        ResourceManager resourceManager = MinecraftClient.getInstance().getResourceManager();
+    public static void loadRoles(RoleManager roleManager, MinecraftServer server) {
+        ResourceManager resourceManager;
+        resourceManager = server.getResourceManager();
         try {
             Optional<Resource> optionalResource = resourceManager.getResource(ROLES_JSON);
             if (optionalResource.isPresent()) {

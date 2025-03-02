@@ -24,14 +24,14 @@ public class RoleHudOverlay implements HudRenderCallback {
     private int scaledHeight;
     @Override
     public void onHudRender(DrawContext drawContext, RenderTickCounter tickCounter) {
+        if(currentRole.isEmpty()) {
+            return;
+        }
         MinecraftClient clientInstance = MinecraftClient.getInstance();
         ResourceManager resourceManager = clientInstance.getResourceManager();
         Identifier textureIdentifier = Identifier.of(BloodOfTheClocktower.MOD_ID, "textures/hud/" + currentRole + ".png");
 
         NativeImage nativeImage = cachedImages.get(textureIdentifier);
-        if(currentRole.isEmpty()) {
-            return;
-        }
         if (nativeImage == null) {
             try {
                 Resource resource = resourceManager.getResource(textureIdentifier)

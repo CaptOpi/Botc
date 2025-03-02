@@ -8,6 +8,14 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.SignBlock;
+import net.minecraft.block.SlabBlock;
+import net.minecraft.block.WallSignBlock;
+import net.minecraft.block.entity.SignBlockEntity;
+import net.minecraft.block.entity.SignText;
+import net.minecraft.block.enums.SlabType;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
@@ -15,8 +23,15 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.PlainTextContent.Literal;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.DyeColor;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import opi.botc.networking.packet.RenderTimerEnd;
 import opi.botc.networking.packet.RoleUpdatePayload;
 import opi.botc.roles.Role;
@@ -30,12 +45,14 @@ import opi.botc.utils.StateSaverAndLoader;
 import opi.botc.utils.ZoneTracker;
 import opi.botc.zones.ArmorStandLocation;
 import opi.botc.zones.ColorLocation;
+import opi.botc.zones.SignLocation;
 import opi.botc.zones.Zone;
 
 import static net.minecraft.server.command.CommandManager.literal;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -44,7 +61,6 @@ import org.slf4j.LoggerFactory;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
-
 
 public class BloodOfTheClocktower implements ModInitializer {
 	public static final String MOD_ID = "botc";
@@ -57,8 +73,10 @@ public class BloodOfTheClocktower implements ModInitializer {
 	public Map<String, ColorLocation> colorLocations = new HashMap<>();
 	public Map<UUID, Colors> playerColors = new HashMap<>();
 	Randomize random = new Randomize(colorLocations, LOGGER);
+	public Map<String, SignLocation> signLocations = new HashMap<>();
 	public Map<UUID, Role> playerRoles = new HashMap<>();
 	RoleManager roleManager = new RoleManager();
+	BossBarTimer timer = null;
 
 	private void onServerStarted(MinecraftServer server) {
 		StateSaverAndLoader serverState = StateSaverAndLoader.getServerState(server);
@@ -66,7 +84,8 @@ public class BloodOfTheClocktower implements ModInitializer {
 		zones = serverState.getZones();
 		armorStandLocations = serverState.getArmorStandLocations();
 		colorLocations = serverState.getColorLocations();
-		RoleLoader.loadRoles(roleManager);
+		signLocations = serverState.getSignLocations();
+		RoleLoader.loadRoles(roleManager, server);
 	}
 
 	@Override
@@ -427,6 +446,7 @@ public class BloodOfTheClocktower implements ModInitializer {
 							random.putAllColorLocations(colorLocations);
 							random.randomize(server.getPlayerManager().getPlayerList());
 							playerColors.putAll(random.getPlayerColors());
+							ServerWorld world = context.getSource().getWorld();
 							for (Map.Entry<UUID, Colors> entry : playerColors.entrySet()) {
 								ServerPlayerEntity player = server.getPlayerManager().getPlayer(entry.getKey());
 								if (player == null) {
@@ -442,9 +462,32 @@ public class BloodOfTheClocktower implements ModInitializer {
 								player.teleport(location.getX(), location.getY(), location.getZ(), true);
 								player.networkHandler.requestTeleport(location.getX(), location.getY(), location.getZ(),
 										player.getYaw(), player.getPitch());
-								context.getSource().sendFeedback(
-										() -> Text.of("Teleported " + player.getName().getString() + " to " + colorKey),
-										false);
+								context.getSource().sendFeedback(() -> Text.of("Teleported " + player.getName().getString() + " to " + colorKey),false);
+								SignLocation signLocation = signLocations.get(colorKey);
+								BlockState blockState = Blocks.SPRUCE_SLAB.getDefaultState().with(SlabBlock.TYPE,
+										SlabType.BOTTOM);
+								world.setBlockState(new BlockPos(signLocation.getX(), signLocation.getY(), signLocation.getZ()),
+										blockState);
+								Direction directionEnum = signLocation.getDirection().equals("north") ? Direction.NORTH
+										: signLocation.getDirection().equals("south") ? Direction.SOUTH
+												: signLocation.getDirection().equals("east") ? Direction.EAST
+														: Direction.WEST;
+								try {
+									BlockState signBlockState = Blocks.SPRUCE_WALL_SIGN.getDefaultState()
+											.with(WallSignBlock.FACING, directionEnum);
+									BlockPos block = new BlockPos(signLocation.getX(), signLocation.getY(), signLocation.getZ())
+											.offset(directionEnum);
+									world.setBlockState(block, signBlockState);
+									SignBlockEntity signBlock = (SignBlockEntity) world.getBlockEntity(block);
+									if (signBlock != null) {
+										// Get the player name given the color key.
+
+										SignText signText = signBlock.getText(true).withMessage(0, Text.of(player.getName().getString())).withColor(Colors.getDyeColorFromDisplayName(colorKey));
+										signBlock.setText(signText, true);
+									}
+								} catch (Exception e) {
+									LOGGER.error("Error: " + e);
+								}
 
 							}
 							BookBuilder bookBuilder = new BookBuilder(playerColors, server);
@@ -499,11 +542,14 @@ public class BloodOfTheClocktower implements ModInitializer {
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess,
 				environment) -> dispatcher.register(literal("roleRemove")
 						.requires(source -> source.hasPermissionLevel(2) || source.getEntity() == null)
-						.then(CommandManager.argument("player", EntityArgumentType.player())
+
+						.then(CommandManager.argument("players", EntityArgumentType.players())
 								.executes(context -> {
-									final var player = EntityArgumentType.getPlayer(context, "player");
-									final var role = "";
-									ServerPlayNetworking.send(player, new RoleUpdatePayload(role));
+									final var player = EntityArgumentType.getPlayers(context, "players");
+									for (ServerPlayerEntity p : player) {
+										final var role = "";
+										ServerPlayNetworking.send(p, new RoleUpdatePayload(role));
+									}
 									return 1;
 								}))));
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess,
@@ -512,14 +558,135 @@ public class BloodOfTheClocktower implements ModInitializer {
 						.then(CommandManager.argument("minutes", IntegerArgumentType.integer(0, 10))
 								.executes(context -> {
 									final var minutes = IntegerArgumentType.getInteger(context, "minutes");
-									BossBarTimer timer = new BossBarTimer(minutes);
+									if (timer != null) {
+										return 1;
+									}
+									timer = new BossBarTimer(minutes);
 									for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
 										timer.addPlayer(player);
 									}
 									timer.start();
-									
+									new Thread() {
+										@Override
+										public void run() {
+											try {
+												Thread.sleep(minutes * 60 * 1000);
+												timer.stop();
+												timer = null;
+												for (ServerPlayerEntity player : server.getPlayerManager()
+														.getPlayerList()) {
+													player.getWorld().playSound(null, player.getBlockPos(),
+															SoundEvents.BLOCK_BELL_USE, SoundCategory.PLAYERS,
+															1.0f, 1.0f);
+													ServerPlayNetworking.send(player, new RenderTimerEnd("end"));
+												}
+											} catch (InterruptedException e) {
+												e.printStackTrace();
+											}
+										}
+									}.start();
 									return 1;
 								}))));
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess,
+				environment) -> dispatcher.register(literal("signList")
+						.requires(source -> source.hasPermissionLevel(2)
+								|| source.getEntity() == null)
+						.executes(context -> {
+							if (signLocations.size() == 0) {
+								context.getSource().sendFeedback(() -> Text.of("No signs"), false);
+							}
+							for (Map.Entry<String, SignLocation> entry : signLocations.entrySet()) {
+								context.getSource().sendFeedback(() -> Text.of(entry.getKey()), false);
+							}
+							return 1;
+						})));
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess,
+				environment) -> dispatcher.register(literal("signRemove")
+						.then(CommandManager.argument("key", StringArgumentType.string())
+								.requires(source -> source.hasPermissionLevel(2)
+										|| source.getEntity() == null)
+								.executes(context -> {
+									final var key = StringArgumentType.getString(context, "key");
+									SignLocation location = signLocations.get(key);
+									if (location != null) {
+										signLocations.remove(location.getKey());
+										StateSaverAndLoader serverState = StateSaverAndLoader
+												.getServerState(context.getSource().getWorld().getServer());
+										serverState.removeSignLocation(location.getKey());
+										context.getSource().sendFeedback(
+												() -> Text.of("Location " + location.key + " deleted"),
+												false);
+									} else {
+										context.getSource()
+												.sendFeedback(() -> Text.of("Location does not exist"),
+														false);
+									}
+									return 1;
+								}))));
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess,
+				environment) -> dispatcher.register(literal("signClear")
+
+						.requires(source -> source.hasPermissionLevel(2)
+								|| source.getEntity() == null)
+						.executes(context -> {
+							final var world = context.getSource().getWorld();
+							StateSaverAndLoader serverState = StateSaverAndLoader
+									.getServerState(world.getServer());
+							serverState.clearSignLocations();
+							signLocations.clear();
+							return 1;
+						})));
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess,
+				environment) -> dispatcher.register(literal("signAdd")
+						.then(CommandManager.argument("key", StringArgumentType.string())
+								.then(CommandManager.argument("direction", StringArgumentType.string())
+										.then(CommandManager.argument("x", IntegerArgumentType.integer())
+												.then(CommandManager.argument("y", IntegerArgumentType.integer())
+														.then(CommandManager
+																.argument("z", IntegerArgumentType.integer())
+																.requires(source -> source.hasPermissionLevel(2)
+																		|| source.getEntity() == null)
+																.executes(context -> {
+																	final var direction = StringArgumentType.getString(
+																			context,
+																			"direction");
+																	if (direction == null) {
+																		return 1;
+																	}
+																	if (!(direction.equals("north"))
+																			&& !(direction.equals("south"))
+																			&& !(direction.equals("east"))
+																			&& !(direction.equals("west"))) {
+																		return 1;
+																	}
+																	final var x = IntegerArgumentType
+																			.getInteger(context, "x");
+																	final var y = IntegerArgumentType
+																			.getInteger(context, "y");
+																	final var z = IntegerArgumentType
+																			.getInteger(context, "z");
+																	final var key = StringArgumentType
+																			.getString(context, "key");
+																	if (signLocations.containsKey(key)) {
+																		return 1;
+																	}
+																	if (Colors.fromString(key) == null) {
+																		return 1;
+																	}
+																	SignLocation location = new SignLocation(key, x, y,
+																			z, direction);
+																	signLocations.put(location.getKey(), location);
+																	StateSaverAndLoader serverState = StateSaverAndLoader
+																			.getServerState(context.getSource()
+																					.getWorld().getServer());
+																	serverState.addSignLocation(location.getKey(),
+																			location);
+																	context.getSource().sendFeedback(
+																			() -> Text.of("Location added"),
+																			false);
+																	return 1;
+
+																}))))))));
 		ServerTickEvents.END_SERVER_TICK.register(server -> {
 			StateSaverAndLoader serverState = StateSaverAndLoader.getServerState(server);
 			Map<String, Zone> zones = serverState.getZones();
