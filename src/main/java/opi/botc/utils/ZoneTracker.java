@@ -43,16 +43,16 @@ public class ZoneTracker {
                 }
                 zonePlayers.getOrDefault(previousZoneKey, new HashSet<>()).remove(uuid);
                 String command = "execute as " + player.getName().getString() + " run voicechat leave";
-                BloodOfTheClocktower.server.getCommandManager().execute(BloodOfTheClocktower.server.getCommandManager().getDispatcher().parse(command, BloodOfTheClocktower.server.getCommandSource()), command);
+                BloodOfTheClocktower.server.getCommandManager().execute(BloodOfTheClocktower.server.getCommandManager().getDispatcher().parse(command, BloodOfTheClocktower.server.getCommandSource().withSilent()), command);
                 String command1 = "execute as " + player.getName().getString() + " run team leave " + player.getName().getString();
-                BloodOfTheClocktower.server.getCommandManager().execute(BloodOfTheClocktower.server.getCommandManager().getDispatcher().parse(command1, BloodOfTheClocktower.server.getCommandSource()), command1);
+                BloodOfTheClocktower.server.getCommandManager().execute(BloodOfTheClocktower.server.getCommandManager().getDispatcher().parse(command1, BloodOfTheClocktower.server.getCommandSource().withSilent()), command1);
                 command1 = "execute as " + player.getName().getString() + " run team join " + "Town";
-                BloodOfTheClocktower.server.getCommandManager().execute(BloodOfTheClocktower.server.getCommandManager().getDispatcher().parse(command1, BloodOfTheClocktower.server.getCommandSource()), command1);
+                BloodOfTheClocktower.server.getCommandManager().execute(BloodOfTheClocktower.server.getCommandManager().getDispatcher().parse(command1, BloodOfTheClocktower.server.getCommandSource().withSilent()), command1);
                 Set<UUID> remaining = zonePlayers.get(previousZoneKey);
                 if (remaining != null && remaining.isEmpty()) {
                     if(armorStandSpawned.contains(previousZoneKey) && locations.containsKey(previousZoneKey)) {
                         String killCmd = "kill @e[type=armor_stand,tag=" + previousZoneKey + "]";
-                        BloodOfTheClocktower.server.getCommandManager().execute(BloodOfTheClocktower.server.getCommandManager().getDispatcher().parse(killCmd, BloodOfTheClocktower.server.getCommandSource()), killCmd);
+                        BloodOfTheClocktower.server.getCommandManager().execute(BloodOfTheClocktower.server.getCommandManager().getDispatcher().parse(killCmd, BloodOfTheClocktower.server.getCommandSource().withSilent()), killCmd);
                         armorStandSpawned.remove(previousZoneKey);
                     }
                 }
@@ -63,13 +63,13 @@ public class ZoneTracker {
                 }
                 zonePlayers.computeIfAbsent(currentZoneKey, k -> new HashSet<>()).add(uuid);
                 String command = "execute as " + player.getName().getString() + " run voicechat join " + currentZoneKey;
-                BloodOfTheClocktower.server.getCommandManager().execute(BloodOfTheClocktower.server.getCommandManager().getDispatcher().parse(command, BloodOfTheClocktower.server.getCommandSource()), command);
+                BloodOfTheClocktower.server.getCommandManager().execute(BloodOfTheClocktower.server.getCommandManager().getDispatcher().parse(command, BloodOfTheClocktower.server.getCommandSource().withSilent()), command);
                 String command1 = "execute as " + player.getName().getString() + " run team join " + currentZoneKey;
-                BloodOfTheClocktower.server.getCommandManager().execute(BloodOfTheClocktower.server.getCommandManager().getDispatcher().parse(command1, BloodOfTheClocktower.server.getCommandSource()), command1);
+                BloodOfTheClocktower.server.getCommandManager().execute(BloodOfTheClocktower.server.getCommandManager().getDispatcher().parse(command1, BloodOfTheClocktower.server.getCommandSource().withSilent()), command1);
                 Set<UUID> playersInZone = zonePlayers.get(currentZoneKey);
                 if (playersInZone.size() == 1 && !armorStandSpawned.contains(currentZoneKey) && locations.containsKey(currentZoneKey)) {
                     String spawnCmd = "summon minecraft:armor_stand " + locations.get(currentZoneKey).getX() + " " + locations.get(currentZoneKey).getY() + " " + locations.get(currentZoneKey).getZ() + " {ShowArms:1b,Invisible:1b,NoBasePlate:1b,NoGravity:1b,Rotation:[" + locations.get(currentZoneKey).getDirection() + "f" + ",0f],ArmorItems:[{},{},{},{id:barrier,count:1}],ArmorDropChances:[0f,0f,0f,0f],Tags:[" + currentZoneKey + "],DisabledSlots:4144959}";
-                    BloodOfTheClocktower.server.getCommandManager().execute(BloodOfTheClocktower.server.getCommandManager().getDispatcher().parse(spawnCmd, BloodOfTheClocktower.server.getCommandSource()), spawnCmd);
+                    BloodOfTheClocktower.server.getCommandManager().execute(BloodOfTheClocktower.server.getCommandManager().getDispatcher().parse(spawnCmd, BloodOfTheClocktower.server.getCommandSource().withSilent()), spawnCmd);
                     armorStandSpawned.add(currentZoneKey);
                 }
             }
