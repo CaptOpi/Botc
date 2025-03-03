@@ -18,12 +18,12 @@ public class Randomize {
     }
 
     public void randomize(List<ServerPlayerEntity> players) {
-
+        List<ServerPlayerEntity> nonOpPlayers = new ArrayList<>();
         Iterator<ServerPlayerEntity> iterator = players.iterator();
         while (iterator.hasNext()) {
             ServerPlayerEntity player = iterator.next();
-            if (player.hasPermissionLevel(2)) {
-                iterator.remove();
+            if (!player.hasPermissionLevel(2)) {
+                nonOpPlayers.add(player);
             }
         }
         
@@ -35,8 +35,8 @@ public class Randomize {
             LOGGER.warn("Too many players. Max is 8, but there are " + players.size() + " players.");
             return;
         }
-        for (ServerPlayerEntity player : players) {
-            playerColors.put(player.getUuid(), availableColors.get(index));
+        for (ServerPlayerEntity nonOp  : nonOpPlayers) {
+            playerColors.put(nonOp.getUuid(), availableColors.get(index));
             index++;
         }
     }

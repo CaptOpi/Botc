@@ -73,4 +73,7 @@ public class RoleManager {
     public Map<String, Role> getTraveller() {
         return travellers;
     }
+    public Map<String, Role> getRoles() {
+        return roles;
+    }
 }
